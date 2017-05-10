@@ -3,7 +3,7 @@ import json
 import jsonschema
 from django import http
 
-from .errors import JsonRpcError, JsonRpcInvalidRequestError
+from .errors import JsonRpcError, JsonRpcInvalidRequestError, JsonRpcParseError
 
 
 def get_jsonrpc_request_from_http_request(request):
@@ -16,7 +16,7 @@ def get_jsonrpc_request_from_http_request(request):
     try:
         data = json.loads(request.body)
     except json.JSONDecodeError:
-        raise JsonRpcInvalidRequestError("Could not decode JSON from request body")
+        raise JsonRpcParseError("Could not decode JSON from request body")
 
     if isinstance(data, dict):
         return JsonRpcRequest.from_dict(data)

@@ -3,15 +3,21 @@ class ExposedMethod(object):
         self.name = name
         self.callable = callable_
 
+    def call_with_params(self, params):
+        if isinstance(params, (list, tuple)):
+            return self.callable(*params)
+        elif isinstance(params, dict):
+            return self.callable(**params)
+
 
 class ExposedMethodContainer(object):
     def __init__(self):
         self.methods = {}
 
-    def add_method(self, method_callable):
-        self.methods[method_callable.name] = method_callable
+    def add_method(self, exposed_method_obj: ExposedMethod):
+        self.methods[exposed_method_obj.name] = exposed_method_obj
 
-    def get_method(self, name):
+    def get_method_by_name(self, name):
         method = self.methods.get(name)
         if not method:
             raise ValueError("No method named '{}' found".format(name))
