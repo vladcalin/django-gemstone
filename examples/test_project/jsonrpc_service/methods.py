@@ -5,6 +5,6 @@ from django_gemstone.decorators import exposed_method
 # Create your views here.
 
 
-@exposed_method()
+@exposed_method("test")
 def say_hello(name):
     return "Hello {}".format(name)

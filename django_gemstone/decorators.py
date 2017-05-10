@@ -24,10 +24,12 @@ class ExposedMethodContainer(object):
 methods = ExposedMethodContainer()
 
 
-def exposed_method(name=None, **kwargs):
+def exposed_method(name=None):
     def decorator(func):
+        nonlocal name
         if not name:
             name = func.__name__
         methods.add_method(ExposedMethod(name, func))
+        return func
 
     return decorator

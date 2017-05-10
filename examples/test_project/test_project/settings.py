@@ -38,7 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'django_gemstone'
+    'jsonrpc_service',
+
+    'django_gemstone',
 ]
 
 MIDDLEWARE = [
