@@ -26,8 +26,12 @@ class JsonRpcEndpoint(View):
         except Exception as e:
             raise JsonRpcInternalError(e)
 
-        return JsonResponse({"result": str(methods.get_method_by_name(jsonrpc_req.method)),
-                             "methods": methods.get_method_names()})
+        return JsonResponse({
+            "jsonrpc": "2.0",
+            "id": jsonrpc_req.id,
+            "result": resp,
+            "error": None
+        })
 
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):

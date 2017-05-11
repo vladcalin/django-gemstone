@@ -60,4 +60,4 @@ class JsonRpcRequest(object):
         except jsonschema.ValidationError as e:
             raise ValueError("Invalid jsonrpc request: {0}".format(str(e)))
 
-        return cls(d.get(id), d["method"], d.get("params", {}))
+        return cls(d.get("id"), d["method"], d.get("params", {}))

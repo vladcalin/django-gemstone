@@ -52,3 +52,10 @@ The response should be
   "result": "hello world"
 }
 ```
+
+
+## Testing
+
+```
+python examples/test_projects/manage.py test django_gemstone
+```
