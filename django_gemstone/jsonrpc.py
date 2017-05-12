@@ -11,12 +11,12 @@ def get_jsonrpc_request_from_http_request(request):
         raise TypeError("Invalid type: expected django.http.HttpRequest but got {}".format(type(request).__name__))
 
     if request.content_type != "application/json":
-        raise JsonRpcInvalidRequestError("Invalid content type")
+        raise JsonRpcInvalidRequestError()
 
     try:
         data = json.loads(request.body)
     except json.JSONDecodeError:
-        raise JsonRpcParseError("Could not decode JSON from request body")
+        raise JsonRpcParseError()
 
     if isinstance(data, dict):
         return JsonRpcRequest.from_dict(data)
@@ -24,7 +24,7 @@ def get_jsonrpc_request_from_http_request(request):
         # TODO: Batch request
         raise NotImplementedError("Batch requests not yet supported")
     else:
-        raise JsonRpcInvalidRequestError("Invalid request body: not array or object")
+        raise JsonRpcInvalidRequestError()
 
 
 class JsonRpcRequest(object):

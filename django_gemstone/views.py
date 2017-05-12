@@ -6,7 +6,8 @@ from django.views.decorators.csrf import csrf_exempt
 
 from .decorators import methods
 from .jsonrpc import get_jsonrpc_request_from_http_request
-from .errors import JsonRpcMethodNotFoundError, JsonRpcInternalError
+from .errors import JsonRpcInvalidRequestError, JsonRpcParseError, JsonRpcInternalError, JsonRpcInvalidParamsError, \
+    JsonRpcMethodNotFoundError, JsonRpcError
 
 
 class JsonRpcEndpoint(View):
@@ -17,7 +18,7 @@ class JsonRpcEndpoint(View):
     def post(self, request):
         # checks the content type
         if request.content_type not in ("application/json",):
-            return HttpResponseBadRequest("Invalid content type")
+            raise JsonRpcInvalidRequestError()
 
         # parse the request
         jsonrpc_req = get_jsonrpc_request_from_http_request(request)
@@ -26,7 +27,7 @@ class JsonRpcEndpoint(View):
         try:
             method_obj = methods.get_method_by_name(jsonrpc_req.method)
         except ValueError:
-            raise JsonRpcMethodNotFoundError("Method '{}' not found".format(jsonrpc_req.method))
+            raise JsonRpcMethodNotFoundError(jsonrpc_req.id)
 
         # actual method call
         try:
@@ -46,6 +47,5 @@ class JsonRpcEndpoint(View):
     def dispatch(self, request, *args, **kwargs):
         try:
             return super(JsonRpcEndpoint, self).dispatch(request, *args, **kwargs)
-        except Exception as e:
-            # TODO: handle json rpc specific errors here
-            pass
+        except JsonRpcError as e:
+            return JsonResponse(e.as_jsonrpc_response())
